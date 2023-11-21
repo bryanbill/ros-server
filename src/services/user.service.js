@@ -6,7 +6,11 @@ export class UserService {
     }
 
     async getAll() {
-        return await this.user.findAll();
+        return await this.user.findAll({
+            attributes: {
+                exclude: ["password"]
+            }
+        });
     }
 
     async getById(id) {

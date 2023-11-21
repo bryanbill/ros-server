@@ -1,14 +1,12 @@
-import { AuthService } from "../services/auth.service.js";
+import { UserService } from "../services/index.js";
 
 export class AuthController {
     constructor() {
-        this.authService = new AuthService();
+        this.userService = new UserService();
     }
 
-    async login(body = { email: "", password: "" }) {
-        // validate body
-
-        const user = await this.authService.login(body);
+    async login(body) {
+        const user = await this.userService.login(body);
         return user;
     }
     async register(body) {
