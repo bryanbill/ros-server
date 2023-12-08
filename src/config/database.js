@@ -18,7 +18,7 @@ export class Database {
         }
     }
 
-    async sync(force = true) {
+    async sync(force = false) {
         try {
             await this.sequelize.sync({ force })
             console.log(chalk.green('All models were synchronized successfully.'));

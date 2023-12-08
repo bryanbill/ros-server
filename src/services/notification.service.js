@@ -1,13 +1,15 @@
 export class NotificationService {
     constructor() {
-        console.log("Notification Service Constructor");
     }
-
-    send(to, body) {
-        console.log("Sending Notification");
+    static async send({ message, userId }) {
+        console.log(`Sending ${message} to user`, userId);
     }
 
     async getAll() {
         return [];
+    }
+    handle(props) {
+        const { message, userId } = props;
+        this.sendMail({ message, userId });
     }
 }

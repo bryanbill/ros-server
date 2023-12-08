@@ -12,9 +12,36 @@ export class UserService {
             }
         });
     }
-
+    /**
+     * 
+     * @param {number} id 
+     * @returns 
+     */
     async getById(id) {
         return await this.user.findByPk(id);
+    }
+    /**
+     * 
+     * @param {string} email 
+     * @returns 
+     */
+    async getByEmail(email) {
+        const user = await this.user.findOne({
+            where: {
+                email
+            }
+        });
+        return user?.dataValues;
+    }
+
+    /**
+     * 
+     * @param {*} id 
+     * @param {*} body 
+     * @returns 
+     */
+    async create(body) {
+        return await this.user.create(body);
     }
 
     async update(id, body) {

@@ -8,7 +8,7 @@ export const User = database.sequelize.define('User', {
         autoIncrement: true,
         allowNull: false
     },
-    name: {
+    fullname: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -20,8 +20,18 @@ export const User = database.sequelize.define('User', {
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    verified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
+    role: {
+        type: DataTypes.STRING,
+        values: ['admin', 'user'],
+        allowNull: false,
+        defaultValue: 'user'
     }
 }, {
-    timestamps: false,
     tableName: 'users'
 });

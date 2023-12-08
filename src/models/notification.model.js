@@ -15,6 +15,12 @@ export const Notification = database.sequelize.define('Notification', {
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    status: {
+        type: DataTypes.STRING,
+        values: ['delivered', 'pending', 'failed'],
+        allowNull: false,
+        defaultValue: false
     }
 }, {
     tableName: 'notifications'

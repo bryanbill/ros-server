@@ -35,14 +35,9 @@ const registerSchema = checkSchema({
         },
         trim: true,
     },
-    firstname: {
+    fullname: {
         in: ["body"],
-        errorMessage: "Firstname is required",
-        trim: true,
-    },
-    lastname: {
-        in: ["body"],
-        errorMessage: "Lastname is required",
+        errorMessage: "Fullname is required",
         trim: true,
     },
     password: {
