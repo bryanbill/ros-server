@@ -6,11 +6,12 @@ export class UserService {
     }
 
     async getAll() {
-        return await this.user.findAll({
+        const users = await this.user.findAll({
             attributes: {
                 exclude: ["password"]
             }
         });
+        return users.map(user => user.dataValues);
     }
     /**
      * 
@@ -18,7 +19,8 @@ export class UserService {
      * @returns 
      */
     async getById(id) {
-        return await this.user.findByPk(id);
+        const user = await this.user.findByPk(id);
+        return user?.dataValues;
     }
     /**
      * 
