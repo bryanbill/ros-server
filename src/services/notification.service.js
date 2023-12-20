@@ -1,15 +1,20 @@
+import Mail from "nodemailer/lib/mailer/index.js";
+import { config } from "../config/index.js";
+import { createTransport } from "nodemailer";
+
 export class NotificationService {
-    constructor() {
-    }
-    static async send({ message, userId }) {
-        console.log(`Sending ${message} to user`, userId);
+    static transporter = createTransport({
+        host: config.SMTP.host,
+        port: config.SMTP.port,
+        secure: true,
+        auth: config.SMTP.auth
+    });
+
+    /**
+     * @param {Mail.Options} body 
+     */
+    static async sendEmail(body) {
+        await this.transporter.sendMail(body);
     }
 
-    async getAll() {
-        return [];
-    }
-    handle(props) {
-        const { message, userId } = props;
-        this.sendMail({ message, userId });
-    }
 }
