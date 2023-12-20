@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import { config } from "../config/index.js";
 import { UserService } from "../services/user.service.js";
-import { Request, Response, NextFunction } from "express";
+import e from "express";
 
-const authMiddleware = async (/**@type {Request} */req, /**@type {Response} */ res, /**@type {NextFunction} */ next) => {
+const authMiddleware = async (/**@type {e.Request} */req, /**@type {e.Response} */ res, /**@type {e.NextFunction} */ next) => {
     const token = req.headers["authorization"].split(" ")[1];
     if (!token) return res.status(401).send({
         message: "Unauthorized"

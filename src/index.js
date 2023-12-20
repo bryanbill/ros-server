@@ -10,11 +10,11 @@ import { QueueService } from "./services/index.js";
 const init = async () => {
     var db;
     try {
-        db = await database.connect().then(async (db) => await db.sync());
+        db = await database.connect().then(async (db) => await db.sync(true));
         if (!db) return;
 
-      
-        await QueueService.init();
+
+        QueueService.init();
 
         const app = express();
         app.use(cors())
