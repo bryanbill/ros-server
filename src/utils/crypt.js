@@ -8,17 +8,17 @@ const hashPassword = (password) => {
 };
 
 /**
- * 
- * @param {{email: '', role: '', id: 0}} user 
+ * @param {{email: '', role: '', id: 0}} user
+ * @param {boolean} isRefreshToken 
  * @returns
  */
-const jwtToken = (user) => {
+const jwtToken = (user, isRefreshToken = false) => {
     const token = jwt.sign({
         id: user.id,
         email: user.email,
         role: user.role
     }, config.JWT_SECRET, {
-        expiresIn: config.JWT_EXPIRATION
+        expiresIn: isRefreshToken ? "7d" : config.JWT_EXPIRATION
     });
     return token
 };
