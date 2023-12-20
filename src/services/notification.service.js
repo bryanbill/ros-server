@@ -6,7 +6,7 @@ export class NotificationService {
     static transporter = createTransport({
         host: config.SMTP.host,
         port: config.SMTP.port,
-        secure: true,
+        secure: false,
         auth: config.SMTP.auth
     });
 

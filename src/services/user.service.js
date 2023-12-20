@@ -37,8 +37,6 @@ export class UserService {
     }
 
     /**
-     * 
-     * @param {*} id 
      * @param {*} body 
      * @returns 
      */
@@ -61,6 +59,4 @@ export class UserService {
             }
         });
     }
-
-
 }
