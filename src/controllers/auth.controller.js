@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs";
-import { UserService } from "../services/index.js";
+import { UserService, QueueService } from "../services/index.js";
 import { hashPassword, jwtToken } from "../utils/crypt.js";
 
 export class AuthController {
     constructor() {
         this.userService = new UserService();
-        
+
     }
     /**
      * @param { {email:'', 'password': ''}} body 
@@ -20,9 +20,13 @@ export class AuthController {
                 reject(new Error("Invalid credentials"));
             })
         });
-        delete user.password;
         const token = jwtToken(user);
-        return { ...user, token };
+        const refreshToken = jwtToken(user, true);
+        await this.userService.update(user.id, { refreshToken });
+        user.token = token;
+        user.refreshToken = refreshToken;
+        delete user.password;
+        return user;
     }
     /**
      * 
@@ -36,13 +40,15 @@ export class AuthController {
         body.password = await hashPassword(body.password);
         user = await this.userService.create(body);
 
-        this.notifcationService.sendMail({
-            message: "Welcome to our platform",
-            userId: user.id
-        });
+        QueueService.queue("email", {
+            to: user.email,
+            subject: "Welcome to the Jungle",
+            html: "<h1>Welcome to the Jungle</h1>"
+        })
 
         return user;
     }
+
     async logout(token = "") {
         if (!token) throw new Error("Invalid token");
 
@@ -50,6 +56,7 @@ export class AuthController {
 
         return {};
     }
+
     async refresh(refreshToken = "") {
         if (!refreshToken) throw new Error("Invalid refresh token");
 

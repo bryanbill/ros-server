@@ -1,15 +1,20 @@
 import express from "express";
 import cors from "cors";
-import { config, database } from "./config/index.js";
 import morgan from "morgan";
-import router from "./routes/index.js";
 import chalk from "chalk";
+
+import { config, database } from "./config/index.js";
+import router from "./routes/index.js";
+import { QueueService } from "./services/index.js";
 
 const init = async () => {
     var db;
     try {
         db = await database.connect().then(async (db) => await db.sync());
         if (!db) return;
+
+      
+        await QueueService.init();
 
         const app = express();
         app.use(cors())

@@ -31,6 +31,23 @@ export const User = database.sequelize.define('User', {
         values: ['admin', 'user'],
         allowNull: false,
         defaultValue: 'user'
+    },
+    organization: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    isActivated: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
+    groups: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true
+    },
+    refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     tableName: 'users'

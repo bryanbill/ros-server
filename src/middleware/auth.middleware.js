@@ -1,13 +1,9 @@
 import jwt from "jsonwebtoken";
 import { config } from "../config/index.js";
-/**
- * 
- * @param {Request} req
- * @param {Response} res 
- * @param {import("express").NextFunction} next 
- * @returns 
- */
-const authMiddleware = (req, res, next) => {
+import { UserService } from "../services/user.service.js";
+import { Request, Response, NextFunction } from "express";
+
+const authMiddleware = async (/**@type {Request} */req, /**@type {Response} */ res, /**@type {NextFunction} */ next) => {
     const token = req.headers["authorization"].split(" ")[1];
     if (!token) return res.status(401).send({
         message: "Unauthorized"
@@ -15,7 +11,8 @@ const authMiddleware = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, config.JWT_SECRET);
-        req.user = decoded;
+        const user = await new UserService().getById(decoded.id);
+        req.user = user;
         next();
     } catch (error) {
         return res.status(401).send({
@@ -24,13 +21,8 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
-/**
- * @param {Request} req
- * @param {Response} res 
- * @param {import("express").NextFunction} next 
- * @returns 
- */
-const adminMiddleware = (req, res, next) => {
+
+const adminMiddleware = (/**@type {Request} */req, /**@type {Response} */ res, /**@type {NextFunction} */ next) => {
     if (req.user.role !== "admin") return res.status(403).send({
         message: "Forbidden"
     });
