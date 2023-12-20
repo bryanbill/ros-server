@@ -33,7 +33,10 @@ const config = {
             pass: process.env.SMTP_PASS
         }
     },
-    SALT: process.env.SALT
+    SALT: process.env.SALT,
+    App: {
+        baseUrl: process.env.APP_URL
+    },
 };
 
 export {

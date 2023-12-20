@@ -23,7 +23,12 @@ const jwtToken = (user, isRefreshToken = false) => {
     return token
 };
 
+const verifyToken = (token) => {
+    return jwt.verify(token, config.JWT_SECRET);
+};
+
 export {
     hashPassword,
-    jwtToken
+    jwtToken,
+    verifyToken
 };

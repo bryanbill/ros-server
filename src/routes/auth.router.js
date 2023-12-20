@@ -3,6 +3,7 @@ import { AuthController } from "../controllers/index.js";
 import { loginSchema, registerSchema, resetPasswordSchema, tokenSchema } from "../middleware/index.js";
 import { query, validationResult } from "express-validator";
 import e from "express";
+import { verifyToken } from "../utils/crypt.js";
 
 const router = Router();
 const authController = new AuthController();
@@ -68,11 +69,18 @@ router.post("/reset-password", resetPasswordSchema, (/**@type {e.Request} */req,
     res.send("Reset Password");
 });
 
-router.patch("/verify", tokenSchema, (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
+router.get("/verify", (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
+    try {
+        const { token } = req.query;
+        if (!token) return res.status(400).send({ message: "Invalid email" });
 
-    res.send("Verify email");
+        const decoded = verifyToken(token);
+        authController.verifyEmail(decoded.id).then((state) => res.send("<b>Success!</b>")).catch((err) => {
+            return res.send("<b>Failed!</b>");
+        });
+    } catch (err) {
+        return res.status(500).send({ message: err.message });
+    }
 });
 
 export default router;

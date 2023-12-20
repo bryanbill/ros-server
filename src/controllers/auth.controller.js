@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
 import { UserService, QueueService } from "../services/index.js";
 import { hashPassword, jwtToken } from "../utils/crypt.js";
-
+import { register } from "../utils/template.js";
+import { config } from "../config/config.js";
 export class AuthController {
     constructor() {
         this.userService = new UserService();
@@ -40,10 +41,17 @@ export class AuthController {
         body.password = await hashPassword(body.password);
         user = await this.userService.create(body);
 
+        const token = jwtToken(user);
+
         QueueService.queue("email", {
             to: user.email,
-            subject: "Welcome to the Jungle",
-            html: "<h1>Welcome to the Jungle</h1>"
+            subject: "Verify your email",
+            html: register(
+                {
+                    name: user.fullname,
+                    link: `${config.App.baseUrl}/api/${config.VERSION}/auth/verify?token=${token}`
+                }
+            )
         })
 
         return user;
@@ -84,14 +92,12 @@ export class AuthController {
         return {};
 
     }
-    async verifyEmail(body = {
-        token: ""
-    }) {
-        const { token } = body;
-        if (!token) throw new Error("Invalid token");
-
-        // ...
-
-        return {};
+    /**
+     * 
+     * @param {number} id 
+     * @returns {Promise<boolean>}
+     */
+    async verifyEmail(id) {
+        return (await this.userService.update(id, { isVerified: true })).length > 0;
     }
 }
