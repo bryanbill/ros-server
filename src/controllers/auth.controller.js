@@ -57,40 +57,18 @@ export class AuthController {
         return user;
     }
 
-    async logout(token = "") {
+    /**
+     * 
+     * @param {number} id 
+     * @returns {Promise<boolean>}
+     */
+    async logout(id) {
         if (!token) throw new Error("Invalid token");
-
-        // ...
-
-        return {};
+        return (await this.userService.update(id, { refreshToken: null })).length > 0;
     }
 
-    async refresh(refreshToken = "") {
-        if (!refreshToken) throw new Error("Invalid refresh token");
-
-        // ...
-
-        return {};
-    }
-    async forgotPassword(email = "") {
-        if (!email) throw new Error("Invalid email");
-
-        // ...
-
-        return {};
-    }
-    async resetPassword(body = {
-        password: "",
-        passwordConfirmation: "",
-        token: "",
-    }) {
-        const { password, passwordConfirmation, token } = body;
-        if (!password || !passwordConfirmation || !token) throw new Error("Invalid credentials");
-
-        // ...
-
-        return {};
-
+    async resetPassword(id, password) {
+        return (await this.userService.update(id, { password: await hashPassword(password) })).length > 0;
     }
     /**
      * 
