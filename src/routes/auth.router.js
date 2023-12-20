@@ -2,13 +2,13 @@ import { Router } from "express";
 import { AuthController } from "../controllers/index.js";
 import { loginSchema, registerSchema, resetPasswordSchema, tokenSchema } from "../middleware/index.js";
 import { query, validationResult } from "express-validator";
-import { Request, Response } from "express";
+import e from "express";
 
 const router = Router();
 const authController = new AuthController();
 
 
-router.post("/login", loginSchema, async (/**@type {Request} */req, /**@type {Response} */ res) => {
+router.post("/login", loginSchema, async (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
     try {
         const result = validationResult(req);
 
@@ -26,7 +26,7 @@ router.post("/login", loginSchema, async (/**@type {Request} */req, /**@type {Re
     }
 });
 
-router.post("/register", registerSchema, async (/**@type {Request} */req, /**@type {Response} */ res) => {
+router.post("/register", registerSchema, async (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
     try {
         const result = validationResult(req);
         if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
@@ -38,14 +38,14 @@ router.post("/register", registerSchema, async (/**@type {Request} */req, /**@ty
     }
 });
 
-router.post("/logout", tokenSchema, (/**@type {Request} */req, /**@type {Response} */ res) => {
+router.post("/logout", tokenSchema, (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
 
     res.send("Logout");
 });
 
-router.post("/refresh", tokenSchema, (/**@type {Request} */req, /**@type {Response} */ res) => {
+router.post("/refresh", tokenSchema, (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
 
@@ -57,18 +57,18 @@ router.get("/forgot-password",
         .notEmpty()
         .trim()
         .isEmail(),
-    (/**@type {Request} */req, /**@type {Response} */ res) => {
+    (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
         res.send("Forgot Password");
     });
 
-router.post("/reset-password", resetPasswordSchema, (/**@type {Request} */req, /**@type {Response} */ res) => {
+router.post("/reset-password", resetPasswordSchema, (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
 
     res.send("Reset Password");
 });
 
-router.patch("/verify", tokenSchema, (/**@type {Request} */req, /**@type {Response} */ res) => {
+router.patch("/verify", tokenSchema, (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
 

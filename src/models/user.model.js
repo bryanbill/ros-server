@@ -19,12 +19,7 @@ export const User = database.sequelize.define('User', {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    verified: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
+        allowNull: true
     },
     role: {
         type: DataTypes.STRING,
@@ -36,6 +31,11 @@ export const User = database.sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    isVerified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
     isActivated: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -46,6 +46,10 @@ export const User = database.sequelize.define('User', {
         allowNull: true
     },
     refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    authProvider: {
         type: DataTypes.STRING,
         allowNull: true
     }
