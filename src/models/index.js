@@ -1,6 +1,2 @@
-import { User } from "./user.model.js";
-import { Notification } from "./notification.model.js";
-export {
-    User,
-    Notification
-}
+export { User } from "./user.model.js";
+export { Notification } from "./notification.model.js";

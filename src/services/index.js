@@ -1,9 +1,3 @@
-import { UserService } from "./user.service.js";
-import { NotificationService } from "./notification.service.js";
-import { QueueService } from "./queue.service.js";
-
-export {
-    UserService,
-    NotificationService,
-    QueueService
-}
+export { UserService } from "./user.service.js";
+export { NotificationService } from "./notification.service.js";
+export { QueueService } from "./queue.service.js";

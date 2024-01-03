@@ -27,8 +27,8 @@ export const User = database.sequelize.define('User', {
         allowNull: false,
         defaultValue: 'user'
     },
-    organization: {
-        type: DataTypes.STRING,
+    organizations: {
+        type: DataTypes.ARRAY(DataTypes.NUMBER),
         allowNull: true
     },
     isVerified: {
@@ -54,5 +54,6 @@ export const User = database.sequelize.define('User', {
         allowNull: true
     }
 }, {
-    tableName: 'users'
+    tableName: 'users',
+    paranoid: true,
 });

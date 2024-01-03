@@ -16,7 +16,7 @@ export class UserService {
     /**
      * 
      * @param {number} id 
-     * @returns 
+     * @returns {Promise<object>}
      */
     async getById(id) {
         const user = await this.user.findByPk(id);
@@ -56,7 +56,8 @@ export class UserService {
         return await this.user.destroy({
             where: {
                 id
-            }
-        });
+            },
+
+        },);
     }
 }
