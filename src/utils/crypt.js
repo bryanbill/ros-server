@@ -15,8 +15,7 @@ const hashPassword = (password) => {
 const jwtToken = (user, isRefreshToken = false) => {
     const token = jwt.sign({
         id: user.id,
-        email: user.email,
-        role: user.role
+        email: user.email
     }, config.JWT_SECRET, {
         expiresIn: isRefreshToken ? "7d" : config.JWT_EXPIRATION
     });
