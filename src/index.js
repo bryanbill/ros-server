@@ -10,9 +10,8 @@ import { QueueService } from "./services/index.js";
 const init = async () => {
     var db;
     try {
-        db = await database.connect().then(async (db) => await db.sync(true));
+        db = await database.connect().then(async (db) => await db?.sync(true));
         if (!db) return;
-
 
         QueueService.init();
 
@@ -29,7 +28,7 @@ const init = async () => {
         })
     } catch (err) {
         console.log(chalk.red("Error on init", err))
-        db.close();
+        await db.close();
     }
 }
 
