@@ -3,7 +3,15 @@ import { config } from "../config/index.js";
 import { UserService } from "../services/user.service.js";
 import e from "express";
 
-const authMiddleware = async (/**@type {e.Request} */req, /**@type {e.Response} */ res, /**@type {e.NextFunction} */ next) => {
+/**
+ * Extracts the token from the request header and verifies it. 
+ * If the token is valid, the user is added to the request object.
+ * @param {e.Request} req 
+ * @param {e.Response} res 
+ * @param {e.NextFunction} next 
+ * @returns 
+ */
+const authMiddleware = async (req, res, next) => {
     const token = req.headers["authorization"].split(" ")[1];
     if (!token) return res.status(401).send({
         message: "Unauthorized"
@@ -12,11 +20,13 @@ const authMiddleware = async (/**@type {e.Request} */req, /**@type {e.Response} 
     try {
         const decoded = jwt.verify(token, config.JWT_SECRET);
         const user = await new UserService().getById(decoded.id);
+        
         if (!user.refreshToken) {
             return res.status(401).send({
                 message: "Unauthorized - Session Logged Out"
             });
         }
+
         req.user = user;
         next();
     } catch (error) {
@@ -27,12 +37,20 @@ const authMiddleware = async (/**@type {e.Request} */req, /**@type {e.Response} 
 };
 
 
-const adminMiddleware = (/**@type {Request} */req, /**@type {Response} */ res, /**@type {NextFunction} */ next) => {
+/**
+ * Ensures that the user has admin privileges.
+ * @param {e.Request} req 
+ * @param {e.Response} res 
+ * @param {e.NextFunction} next 
+ * @returns 
+ */
+const adminMiddleware = (req, res, next) => {
     if (req.user.role !== "admin") return res.status(403).send({
         message: "Forbidden"
     });
     next();
 }
+
 
 export {
     authMiddleware,
