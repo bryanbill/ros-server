@@ -8,7 +8,7 @@ export class UserService {
     async getAll() {
         const users = await this.user.findAll({
             attributes: {
-                exclude: ["password"]
+                exclude: ["password", 'refreshToken']
             }
         });
         return users.map(user => user.dataValues);
@@ -31,7 +31,8 @@ export class UserService {
         const user = await this.user.findOne({
             where: {
                 email
-            }
+            },
+
         });
         return user?.dataValues;
     }
