@@ -28,7 +28,7 @@ export const User = database.sequelize.define('User', {
         defaultValue: 'user'
     },
     organizations: {
-        type: DataTypes.ARRAY(DataTypes.NUMBER),
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true
     },
     isVerified: {

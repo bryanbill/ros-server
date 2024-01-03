@@ -4,6 +4,9 @@ import { loginSchema, registerSchema, resetPasswordSchema, tokenSchema } from ".
 import { query, validationResult } from "express-validator";
 import e from "express";
 import { verifyToken } from "../utils/crypt.js";
+import { resetPasswordPage } from "../utils/template.js";
+import { config } from "../config/config.js";
+import chalk from "chalk";
 
 const router = Router();
 const authController = new AuthController();
@@ -58,16 +61,55 @@ router.get("/forgot-password",
         .notEmpty()
         .trim()
         .isEmail(),
-    (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
-        res.send("Forgot Password");
+    async (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
+        try {
+            const result = validationResult(req);
+            if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
+
+            const state = await authController.forgotPassword(req.query.email);
+            if (!state) return res.status(400).send({ message: "Couldn't send email" });
+
+            return res.status(200).send({ message: "Email sent successfully" });
+        } catch (err) {
+            return res.status(500).send({ message: err.message });
+        }
     });
 
-router.post("/reset-password", resetPasswordSchema, (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
+router.get("/reset-password",
+    query('token', 'Invalid token')
+        .notEmpty()
+        .trim(),
+    async (req, res) => {
+        try {
+            const result = validationResult(req);
+            if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
+            res.send(resetPasswordPage({
+                link: `${config.App.baseUrl}/api/${config.VERSION}/auth/reset-password?token=${req.query.token}`
+            }))
+        } catch (err) {
+            return res.status(500).send({ message: err.message });
+        }
+    });
 
-    res.send("Reset Password");
-});
+router.post("/reset-password",
+    resetPasswordSchema,
+    query("token", "Invalid token")
+        .notEmpty()
+        .trim(),
+    async (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
+        try {
+            const result = validationResult(req);
+            if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
+
+            const response = await authController.resetPassword(req.query.token, req.body.password);
+            if (!response) return res.status(400).send({ message: "Couldn't reset password" });
+
+            return res.status(200).send({ message: "Password reset successfully" });
+        } catch (err) {
+            console.log(chalk.red(err));
+            return res.status(500).send({ message: err.message });
+        }
+    });
 
 router.get("/verify", (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
     try {
