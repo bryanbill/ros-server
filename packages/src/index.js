@@ -1,0 +1,1 @@
+export { GeofenceClient } from "../geofence/index.js";

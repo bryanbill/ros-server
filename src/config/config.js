@@ -14,6 +14,7 @@ const config = {
         instance: process.env.GEOFENCE + '/instances',
         adminRule: process.env.GEOFENCE + '/adminrules',
         batch: process.env.GEOFENCE + '/batch/exec',
+        token: btoa(`${process.env.GEOFENCE_USER}:${process.env.GEOFENCE_PASS}`)
     },
     VERSION: process.env.VERSION,
     DB: {

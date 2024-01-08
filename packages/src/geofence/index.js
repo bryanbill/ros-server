@@ -1,0 +1,1 @@
+export { UserGeofence } from './user.geofence.js';

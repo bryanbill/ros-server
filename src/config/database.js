@@ -28,6 +28,16 @@ export class Database {
         }
     }
 
+    async drop() {
+        try {
+            await this.sequelize.drop()
+            console.log(chalk.green('All models were dropped successfully.'));
+            return this;
+        } catch (error) {
+            console.error(chalk.red(`Unable to drop the models: ${error}`));
+        }
+    }
+
     async close() {
         try {
             await this.sequelize.close()
