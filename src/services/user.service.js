@@ -42,7 +42,7 @@ export class UserService {
      * @returns 
      */
     async create(body) {
-        return await this.user.create(body);
+        return (await this.user.create(body)).dataValues;
     }
 
     async update(id, body) {

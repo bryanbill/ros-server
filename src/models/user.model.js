@@ -8,7 +8,7 @@ export const User = database.sequelize.define('User', {
         autoIncrement: true,
         allowNull: false
     },
-    fullname: {
+    fullName: {
         type: DataTypes.STRING,
         allowNull: false
     },
