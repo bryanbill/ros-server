@@ -10,7 +10,7 @@ export class Database {
 
     async connect() {
         try {
-            await this.sequelize.authenticate()
+            await this.sequelize.authenticate();
             console.log(chalk.green('Connection has been established successfully.'));
             return this;
         } catch (error) {
