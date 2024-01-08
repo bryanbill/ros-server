@@ -1,15 +1,20 @@
 import { config } from "ros-auth/src/config"
 
 class UserGeofence {
+    
     constructor() {
         this.geofence = config.GEOFENCE.user;
+        this.headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Basic ${config.GEOFENCE.token}`,
+        }
     }
 
     /**
      * Creates a new Geofence User
      * 
      * @param {{username:string, email:string, password:string}} options 
-     * 
      * @returns {Promise<Object>}
      */
     async createUser(options) {
@@ -46,8 +51,27 @@ class UserGeofence {
      * @returns {Promise<[]>}
      */
     async getUsers(options) {
-        
+
     }
+
+    /**
+     * Updates a Geofence User
+     * 
+     * @param {string} username
+     * @param {{username:string, email:string, password:string}} options
+     * 
+     * @returns {Promise<Object>}
+     */
+    async updateUser(username, options) { }
+
+    /**
+     * Counts the number of Geofence Users
+     * 
+     * @param {string} term - Search term, defaults to `*`
+     * 
+     * @returns {Promise<number>}
+     */
+    async countUsers(term = '*') { }
 
 }
 
