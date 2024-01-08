@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/index.js";
-import { loginSchema, registerSchema, resetPasswordSchema, tokenSchema } from "../middleware/index.js";
+import { authMiddleware, loginSchema, registerSchema, resetPasswordSchema, tokenSchema } from "../middleware/index.js";
 import { query, validationResult } from "express-validator";
 import e from "express";
 import { verifyToken } from "../utils/crypt.js";
@@ -36,24 +36,35 @@ router.post("/register", registerSchema, async (/**@type {e.Request} */req, /**@
         if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
 
         const user = await authController.register(req.body);
-        return res.status(200).send(user);
+        return res.status(201).send(user);
     } catch (error) {
+        console.log(chalk.red(error));
         return res.status(500).send({ message: error.message });
     }
 });
 
-router.post("/logout", tokenSchema, (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
-
-    res.send("Logout");
+router.post("/logout", authMiddleware, async (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
+    try {
+        const result = await authController.logout(req.user.id);
+        if (!result) return res.status(400).send({ message: "Couldn't logout" });
+        return res.status(200).send({ message: "Logout successfully" });
+    } catch (err) {
+        return res.status(500).send({ message: err.message });
+    }
 });
 
-router.post("/refresh", tokenSchema, (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
+router.post("/refresh", tokenSchema, async (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
+    try {
+        const result = validationResult(req);
+        if (!result.isEmpty()) return res.status(400).send({ message: result.array()[0].msg });
 
-    res.send("Refresh");
+        const user = await authController.refreshToken(req.body.token);
+        if (!user) return res.status(400).send({ message: "Invalid token" });
+        return res.status(201).send(user);
+
+    } catch (err) { 
+        return res.status(500).send({ message: err.message });
+    }
 });
 
 router.get("/forgot-password",

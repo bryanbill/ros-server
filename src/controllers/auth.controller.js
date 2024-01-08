@@ -40,12 +40,13 @@ export class AuthController {
      */
     async register(body) {
         var user = await this.userService.getByEmail(body.email);
-        if (user) throw new Error("Email already exists");
+        if (user && !user.deletedAt) throw new Error("Email already exists");
 
         body.password = await hashPassword(body.password);
         user = await this.userService.create(body);
 
         const token = jwtToken(user);
+        const refreshToken = jwtToken(user, true);
 
         QueueService.queue("email", {
             to: user.email,
@@ -56,8 +57,12 @@ export class AuthController {
                     link: `${config.App.baseUrl}/api/${config.VERSION}/auth/verify?token=${token}`
                 }
             )
-        })
+        });
 
+        user.token = token;
+        user.refreshToken = refreshToken;
+        delete user.password;
+        console.log(user);
         return user;
     }
 
@@ -112,5 +117,28 @@ export class AuthController {
         })
 
         return true;
+    }
+
+    /**
+     * Create new token and refresh token
+     * @param {string} token 
+     * @returns 
+     */
+    async refreshToken(token) {
+        const { id } = verifyToken(token, true);
+        const user = await this.userService.getById(id);
+        if (!user) throw new Error("Invalid token");
+
+        if (token !== user.refreshToken) throw new Error("Invalid token");
+
+        const newToken = jwtToken(user);
+        const newRefreshToken = jwtToken(user, true);
+        await this.userService.update(id, { refreshToken: newRefreshToken });
+
+        user.token = newToken;
+        user.refreshToken = newRefreshToken;
+        delete user.password;
+
+        return user;
     }
 }

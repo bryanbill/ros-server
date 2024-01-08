@@ -35,7 +35,7 @@ const registerSchema = checkSchema({
         },
         trim: true,
     },
-    fullname: {
+    fullName: {
         in: ["body"],
         errorMessage: "Fullname is required",
         trim: true,
