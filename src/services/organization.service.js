@@ -1,10 +1,32 @@
 import { Organization } from "../models/index.js";
 
 
-
 export class OrganizationService {
     constructor() {
         this.organization = Organization;
+    }
+
+    /**
+     * Fetch all the organizations
+     */
+    async getAllOrgs() {
+        const orgs = await this.organization.findAll();
+        
+        console.log(orgs);
+
+        // return orgs.map((org) => org?.dataValues);
+
+    }
+
+
+    /**
+     * Get organization by ID
+     * @param {*} orgId
+     */
+    async getOrgBId(orgId) {
+        const org = await this.organization.findByPk(orgId);
+
+        return org?.dataValues;
     }
 
     /**
@@ -38,15 +60,28 @@ export class OrganizationService {
 
     async create(body) {
         const user = (await this.organization.create(body)).dataValues;
+        console.log(`New User: ${user}`);
 
         return await user;
     }
 
-    async update(body) {
+    async update(body, id) {
+        console.log(body);
+
+        return await this.organization.update(body, {
+            where: {
+                id
+            }
+        });
 
     }
 
-    async delete(body) {
+    async delete(id) {
+        return await this.organization.destroy({
+            where: {
+                id
+            }
+        });
 
     }
 }
