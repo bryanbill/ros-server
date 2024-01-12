@@ -1,3 +1,4 @@
+import { isEmpty } from "bullmq";
 import { Organization } from "../models/index.js";
 
 
@@ -11,10 +12,10 @@ export class OrganizationService {
      */
     async getAllOrgs() {
         const orgs = await this.organization.findAll();
-        
+
         console.log(orgs);
 
-        // return orgs.map((org) => org?.dataValues);
+        return orgs.map((org) => org?.dataValues);
 
     }
 

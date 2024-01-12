@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { Organization } from "../models/index.js";
-import { OrganizationService } from "../services/organization.service";
+import { OrganizationService } from "../services/index.js";
 import { where } from "sequelize";
 import { isEmpty } from "bullmq";
 
@@ -57,9 +57,9 @@ export class OrganizationController {
      */
     async updateOrg(body, id) {
         try {
-            return await (this.organization.update(body, id))[0] > 0;
+            return (await this.organization.update(body, id))[0] > 0;
         } catch (error) {
-            chalk.red(`Error: ${error}`);
+            chalk.red(`Error: ${error.message}`);
         }
     }
 
@@ -70,13 +70,9 @@ export class OrganizationController {
      */
     async deleteOrg(id) {
         try {
-            return await (this.organization.delete(id, {
-                where: {
-                    id
-                }
-            }));
+            return (await this.organization.delete(id)) > 0;
         } catch (error) {
-            chalk.red(`Error: ${error}`);
+            chalk.red(`Error: ${error.message}`);
         }
     }
 }

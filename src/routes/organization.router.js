@@ -1,21 +1,26 @@
-import { OrganizationController } from "../controllers/organization.controller";
+import { OrganizationController } from "../controllers/index.js";
 import { Router } from "express";
-import { authMiddleware } from "../middleware";
+import { authMiddleware } from "../middleware/index.js";
 import { validationResult } from "express-validator";
+import { isEmpty } from "bullmq";
 
 
 const router = Router();
 const orgController = new OrganizationController();
 
-router.get(`/orgs`, async (req,res) => {
+router.get(`/`, async (req,res) => {
     try {
-        const orgs = await orgController.getAll()
-        return res.status(200).send(orgs);
+        const orgs = await orgController.getAll();
+        console.log(orgs);
+
+        if(isEmpty(orgs)) return res.status(200).send({status: 'ok', message: 'No organizations found', data: []})
+
+        return res.status(200).send({status: 'ok', message: 'Organizations found', data: orgs});
     } catch (error) {
         return res.status(500).send({message: error.message});
     }
 });
-router.post(`/orgs`, async (req, res) => {
+router.post(`/create`, async (req, res) => {
     const result = validationResult(req);
 
     if(! result.isEmpty()) return res.status(400).send({message: result.array()[0]});
@@ -24,18 +29,18 @@ router.post(`/orgs`, async (req, res) => {
     return res.status(201).send(org);
 
 });
-router.patch(`/orgs`, async (req, res) => {
-    const result = await orgController.updateOrg(req.org.id, req.body);
-    if(! result) return res.status(400).send({message: 'Error while updating the resource!!'});
+router.patch(`/:id`, async (req, res) => {
+    const result = await orgController.updateOrg(req.body, req.params.id);
+    if(! result) return res.status(400).send({status: false, message: 'Error while updating the resource!!', data: result});
 
-    return res.status(200).send({message: `Organization updated successfully!!!`});
+    return res.status(200).send({message: `Organization updated successfully!!!`, data: result});
 });
-router.delete(`/orgs`, async (req, res) => {
-    const result = await orgController.deleteOrg(req.org.id, req.body);
+router.delete(`/:id`, async (req, res) => {
+    const result = await orgController.deleteOrg(req.params.id, req.body);
 
-    if(! result) return res.status(200).send({message: 'Error while deleting the resource'});
+    if(! result) return res.status(400).send({status: result, message: 'Error while deleting the resource'});
 
-    return res.status(200).send({message: 'Organization DEleted successfully!!'});
+    return res.status(200).send({message: 'Organization Deleted successfully!!'});
 });
 
 export default router;
