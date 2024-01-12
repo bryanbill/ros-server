@@ -8,7 +8,7 @@ import { isEmpty } from "bullmq";
 const router = Router();
 const orgController = new OrganizationController();
 
-router.get(`/`, async (req,res) => {
+router.get(`/`, authMiddleware, async (req,res) => {
     try {
         const orgs = await orgController.getAll();
         console.log(orgs);
@@ -20,7 +20,8 @@ router.get(`/`, async (req,res) => {
         return res.status(500).send({message: error.message});
     }
 });
-router.post(`/create`, async (req, res) => {
+
+router.post(`/create`, authMiddleware, async (req, res) => {
     const result = validationResult(req);
 
     if(! result.isEmpty()) return res.status(400).send({message: result.array()[0]});
@@ -29,7 +30,7 @@ router.post(`/create`, async (req, res) => {
     return res.status(201).send(org);
 
 });
-router.patch(`/:id`, async (req, res) => {
+router.patch(`/:id`, authMiddleware, async (req, res) => {
     const result = await orgController.updateOrg(req.body, req.params.id);
     if(! result) return res.status(400).send({status: false, message: 'Error while updating the resource!!', data: result});
 
@@ -42,5 +43,7 @@ router.delete(`/:id`, async (req, res) => {
 
     return res.status(200).send({message: 'Organization Deleted successfully!!'});
 });
+
+
 
 export default router;
