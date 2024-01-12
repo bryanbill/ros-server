@@ -11,8 +11,7 @@ import chalk from "chalk";
 const router = Router();
 const authController = new AuthController();
 
-
-router.post("/login", loginSchema, async (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
+router.post(`/login`, loginSchema, async (/**@type {e.Request} */req, /**@type {e.Response} */ res) => {
     try {
         const result = validationResult(req);
 
